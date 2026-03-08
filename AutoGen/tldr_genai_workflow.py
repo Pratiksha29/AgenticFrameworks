@@ -21,9 +21,101 @@ except ImportError:
     pass
 
 from autogen_agentchat.agents import AssistantAgent
-from autogen_ext.models.openai import OpenAIChatCompletionClient
+from autogen_core.models import ChatCompletionClient, UserMessage, ModelCapabilities, RequestUsage
+from typing import List, Optional, Dict, Any, AsyncIterator
+import google.genai as genai
 
 from tldr_fetcher import get_latest_tldr_ai_research
+
+class GeminiModelClient(ChatCompletionClient):
+    """Custom Gemini model client for AutoGen."""
+    
+    def __init__(self, model: str = "gemini-2.0-flash", api_key: str = None):
+        self.model = model
+        self.client = genai.Client(api_key=api_key)
+        
+    async def create(
+        self,
+        messages: List[UserMessage],
+        **kwargs
+    ) -> str:
+        """Create a completion using Gemini."""
+        # Convert messages to Gemini format
+        prompt = "\n".join([msg.content for msg in messages])
+        
+        response = self.client.models.generate_content(
+            model=self.model,
+            contents=prompt
+        )
+        
+        return response.text
+        
+    async def create_stream(
+        self,
+        messages: List[UserMessage],
+        **kwargs
+    ) -> AsyncIterator[str]:
+        """Create a streaming completion using Gemini."""
+        prompt = "\n".join([msg.content for msg in messages])
+        
+        response = self.client.models.generate_content(
+            model=self.model,
+            contents=prompt,
+            stream=True
+        )
+        
+        for chunk in response:
+            if chunk.text:
+                yield chunk.text
+                
+    async def count_tokens(self, text: str) -> int:
+        """Count tokens in text (approximate)."""
+        # Rough approximation: ~4 characters per token
+        return len(text) // 4
+        
+    async def actual_usage(self) -> RequestUsage:
+        """Get actual usage information."""
+        return RequestUsage(
+            prompt_tokens=0,
+            completion_tokens=0
+        )
+        
+    async def total_usage(self) -> RequestUsage:
+        """Get total usage information."""
+        return RequestUsage(
+            prompt_tokens=0,
+            completion_tokens=0
+        )
+        
+    async def remaining_tokens(self) -> Optional[int]:
+        """Get remaining tokens (not available for Gemini)."""
+        return None
+        
+    @property
+    def capabilities(self) -> ModelCapabilities:
+        """Get model capabilities."""
+        return ModelCapabilities(
+            vision=False,
+            function_calling=True,
+            json_output=True
+        )
+        
+    @property
+    def model_info(self) -> Dict[str, Any]:
+        """Get model information."""
+        return {
+            'vision': False,
+            'function_calling': True,
+            'json_output': True,
+            'family': 'gemini',
+            'structured_output': True,
+            'multiple_system_messages': True
+        }
+        
+    async def close(self) -> None:
+        """Close the client."""
+        # No explicit cleanup needed for google.genai client
+        pass
 
 
 def get_tldr_ai_latest_research() -> str:
@@ -36,13 +128,13 @@ def get_tldr_ai_latest_research() -> str:
 
 async def run_workflow() -> None:
     """Run the AutoGen workflow: TLDR AI -> latest GenAI research article."""
-    api_key = os.environ.get("OPENAI_API_KEY")
+    api_key = os.environ.get("GEMINI_API_KEY")
     if not api_key:
-        print("Set OPENAI_API_KEY in your environment (or .env) to run this workflow.")
+        print("Set GEMINI_API_KEY in your environment (or .env) to run this workflow.")
         return
 
-    model_client = OpenAIChatCompletionClient(
-        model="gpt-4o-mini",
+    model_client = GeminiModelClient(
+        model="gemini-2.0-flash",
         api_key=api_key,
     )
 

@@ -14,7 +14,7 @@ This workflow uses [AutoGen](https://microsoft.github.io/autogen/) to read the [
 
    ```bash
    cd AutoGen
-   python -m venv .venv
+   python3.11 -m venv .venv
    source .venv/bin/activate   # Windows: .venv\Scripts\activate
    ```
 
@@ -24,20 +24,20 @@ This workflow uses [AutoGen](https://microsoft.github.io/autogen/) to read the [
    pip install -r requirements.txt
    ```
 
-3. **Set your OpenAI API key**:
+3. **Set your Gemini API key**:
 
    - Option A: export in shell  
-     `export OPENAI_API_KEY=sk-...`
+     `export GEMINI_API_KEY=your-gemini-api-key`
    - Option B: create a `.env` in the `AutoGen` folder (or project root) with:
      ```
-     OPENAI_API_KEY=sk-...
+     GEMINI_API_KEY=your-gemini-api-key
      ```
      `python-dotenv` is included so the script will load `.env` if present.
 
 ## Run
 
 ```bash
-python tldr_genai_workflow.py
+python3.11 tldr_genai_workflow.py
 ```
 
 The script will:
@@ -49,17 +49,17 @@ The script will:
 
 - **`tldr_genai_workflow.py`** – AutoGen workflow: `AssistantAgent` + TLDR tool and task.
 - **`tldr_fetcher.py`** – Fetches and parses TLDR AI HTML; used by the tool.
-- **`requirements.txt`** – Python dependencies (AutoGen, OpenAI, requests, BeautifulSoup, python-dotenv).
+- **`requirements.txt`** – Python dependencies (AutoGen, Gemini, requests, BeautifulSoup, python-dotenv).
 
 ## Requirements
 
-- **Python 3.10+** (required by `autogen-ext`; the workflow will not install on 3.9)
-- OpenAI API key (for the AutoGen assistant model, e.g. `gpt-4o-mini`).
+- **Python 3.11+** (required by `autogen-ext`; the workflow will not install on 3.9)
+- Gemini API key (for the AutoGen assistant model, e.g. `gemini-2.0-flash`).
 
 
 cd AutoGen
-python3.10 -m venv .venv   # or python3 if it’s 3.10+
+python3.11 -m venv .venv   # or python3 if it's 3.11+
 source .venv/bin/activate  # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
-export OPENAI_API_KEY=sk-...   # or use a .env file
-python tldr_genai_workflow.py
+export GEMINI_API_KEY=your-gemini-api-key   # or use a .env file
+python3.11 tldr_genai_workflow.py
