@@ -1,5 +1,53 @@
 
 
+# Google Agent Development Kit (ADK) Project
+
+This project contains agents built using Google's Agent Development Kit (ADK).
+
+## 🔑 API Key & Setup Instructions
+
+### 1. Get Google Cloud Project ID
+1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+2. Select your project from the project dropdown
+3. Copy the **Project ID** (not Project Name)
+
+### 2. Get Google AI API Key
+1. Visit [Google AI Studio](https://aistudio.google.com)
+2. Sign in with your Google account
+3. Click **"Create API Key"**
+4. Select or create a Google Cloud project
+5. Copy the generated API key (starts with `AIza`)
+
+### 3. Set Up Environment Variables
+Create a `.env` file in the ADK directory:
+```bash
+# Google Cloud Configuration
+GOOGLE_CLOUD_PROJECT=your-project-id
+GOOGLE_CLOUD_LOCATION=us-central1
+
+# Google AI Configuration
+GOOGLE_AI_API_KEY=your-api-key-here
+
+# Optional: Service Account Key
+GOOGLE_APPLICATION_CREDENTIALS=/path/to/your/service-account-key.json
+```
+
+### 4. Set Up Google Cloud Credentials
+**Option A:** Service Account Key
+```bash
+export GOOGLE_APPLICATION_CREDENTIALS="/path/to/your/service-account-key.json"
+```
+
+**Option B:** Application Default Credentials
+```bash
+gcloud auth application-default login
+```
+
+### 5. Enable Required APIs
+Make sure these APIs are enabled in your Google Cloud project:
+- Vertex AI API
+- Generative Language API
+
 ## 🚀 Quick Start
 
 ### Prerequisites
@@ -83,6 +131,10 @@ Once the agent is running, you can ask:
 
 ## 📚 Learn More
 
-- [Google ADK Documentation](https://cloud.google.com/agent-development-kit)
+- [Google ADK Documentation](https://google.github.io/adk-docs/tutorials/agent-team/)
+- [Google AI Studio](https://aistudio.google.com) - Create API keys and test models
 - [Vertex AI Models](https://cloud.google.com/vertex-ai/generative-ai/docs/learn/models)
-- [Google Cloud Authentication](https://cloud.google.com/docs/authentication)
+- [ADK Agent Team Tutorial](https://google.github.io/adk-docs/tutorials/agent-team/)
+
+
+
